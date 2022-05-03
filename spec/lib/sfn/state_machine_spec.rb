@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::StateMachine' do
@@ -7,7 +9,7 @@ describe 'Sfn::StateMachine' do
   describe '.new' do
     subject { Sfn::StateMachine.new(name, arn) }
     context 'the state machine does not exist' do
-      let(:name) { "hello" }
+      let(:name) { 'hello' }
       it { expect(subject.name).to eq(name) }
       it { expect(subject.executions).to eq({}) }
     end
@@ -32,35 +34,35 @@ describe 'Sfn::StateMachine' do
     end
 
     describe '.find_by_name' do
-      subject {Sfn::StateMachine.find_by_name("test")}
+      subject { Sfn::StateMachine.find_by_name('test') }
 
-      it { expect(subject.name).to eq("test") }
-      it { expect(subject.arn).to eq("arn:aws:states:eu-west-1:123456789012:stateMachine:test") }
+      it { expect(subject.name).to eq('test') }
+      it { expect(subject.arn).to eq('arn:aws:states:eu-west-1:123456789012:stateMachine:test') }
       it { expect(subject.executions).to eq({}) }
     end
 
     describe '.find_by_arn' do
-      subject {Sfn::StateMachine.find_by_arn("arn:aws:states:eu-west-1:123456789012:stateMachine:foo")}
+      subject { Sfn::StateMachine.find_by_arn('arn:aws:states:eu-west-1:123456789012:stateMachine:foo') }
 
-      it { expect(subject.name).to eq("foo") }
-      it { expect(subject.arn).to eq("arn:aws:states:eu-west-1:123456789012:stateMachine:foo") }
+      it { expect(subject.name).to eq('foo') }
+      it { expect(subject.arn).to eq('arn:aws:states:eu-west-1:123456789012:stateMachine:foo') }
       it { expect(subject.executions).to eq({}) }
     end
 
     describe '.destroy_all' do
       let!(:all_state_machines) { Sfn::StateMachine.all }
-      before{
+      before do
         Sfn::StateMachine.destroy_all
-      }
-      it { expect( Sfn::StateMachine.all.count).to eq(0) }
+      end
+      it { expect(Sfn::StateMachine.all.count).to eq(0) }
     end
   end
 
   context 'instance method' do
     subject { Sfn::StateMachine.new(name, arn) }
-    
+
     describe '#run' do
-      it { expect(subject.run).to be_an_instance_of(Sfn::Execution)}
+      it { expect(subject.run).to be_an_instance_of(Sfn::Execution) }
     end
 
     describe '#destroy' do
@@ -68,7 +70,10 @@ describe 'Sfn::StateMachine' do
     end
 
     describe '#to_hash' do
-      it { expect(subject.to_hash).to eq({ "stateMachineArn" => "arn:aws:states:eu-west-1:123456789012:stateMachine:test", "name" => "test" }) }
+      it {
+        expect(subject.to_hash).to eq({ 'stateMachineArn' => 'arn:aws:states:eu-west-1:123456789012:stateMachine:test',
+                                        'name' => 'test' })
+      }
     end
   end
 end

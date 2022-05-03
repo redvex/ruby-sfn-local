@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::MockMacros::Lambda' do
@@ -7,14 +9,14 @@ describe 'Sfn::MockMacros::Lambda' do
         let(:data) do
           {
             status: 200,
-            payload: "some response" 
+            payload: 'some response'
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Return: {
-                Payload: "some response", 
+                Payload: 'some response',
                 StatusCode: 200
               }
             }
@@ -27,16 +29,16 @@ describe 'Sfn::MockMacros::Lambda' do
       context 'status is not 200' do
         let(:data) do
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Throw: {
-                Error: "401", 
-                Cause: "User not authorised"
+                Error: '401',
+                Cause: 'User not authorised'
               }
             }
           }
@@ -50,26 +52,26 @@ describe 'Sfn::MockMacros::Lambda' do
       let(:data) do
         [
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           },
           {
             status: 200,
-            payload: "some response" 
+            payload: 'some response'
           }
         ]
       end
       let(:expected_response) do
         {
-          "0" => {
+          '0' => {
             Throw: {
-              Error: "401", 
-              Cause: "User not authorised"
+              Error: '401',
+              Cause: 'User not authorised'
             }
           },
-          "1" => {
+          '1' => {
             Return: {
-              Payload: "some response", 
+              Payload: 'some response',
               StatusCode: 200
             }
           }

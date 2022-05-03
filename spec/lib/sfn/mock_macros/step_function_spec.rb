@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::MockMacros::StepFunction' do
@@ -7,15 +9,15 @@ describe 'Sfn::MockMacros::StepFunction' do
         let(:data) do
           {
             status: 200,
-            output: { some: "data" } 
+            output: { some: 'data' }
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Return: {
-                Output: "{\"some\":\"data\"}", 
-                Status: "SUCCEDED"
+                Output: '{"some":"data"}',
+                Status: 'SUCCEDED'
               }
             }
           }
@@ -27,16 +29,16 @@ describe 'Sfn::MockMacros::StepFunction' do
       context 'status is not 200' do
         let(:data) do
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Throw: {
-                Error: "401", 
-                Cause: "User not authorised"
+                Error: '401',
+                Cause: 'User not authorised'
               }
             }
           }
@@ -50,27 +52,27 @@ describe 'Sfn::MockMacros::StepFunction' do
       let(:data) do
         [
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           },
           {
             status: 200,
-            output: { some: "data" } 
+            output: { some: 'data' }
           }
         ]
       end
       let(:expected_response) do
         {
-          "0" => {
+          '0' => {
             Throw: {
-              Error: "401", 
-              Cause: "User not authorised"
+              Error: '401',
+              Cause: 'User not authorised'
             }
           },
-          "1" => {
+          '1' => {
             Return: {
-              Output: "{\"some\":\"data\"}", 
-              Status: "SUCCEDED"
+              Output: '{"some":"data"}',
+              Status: 'SUCCEDED'
             }
           }
         }

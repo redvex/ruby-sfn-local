@@ -16,11 +16,11 @@ module Sfn
 
     def exec(mock_data, input)
       MockData.write_context(state_machine.name, test_case, mock_data)
-      self.arn = AwsCli.run("stepfunctions", "start-execution",
+      self.arn = AwsCli.run('stepfunctions', 'start-execution',
                             { name: uuid,
-                              "state-machine": "#{state_machine.arn}##{test_case}",
+                              'state-machine': "#{state_machine.arn}##{test_case}",
                               input: "'#{input.to_json}'" },
-                            "executionArn")
+                            'executionArn')
       self.output, self.profile = ExecutionLog.parse(arn)
       self
     end

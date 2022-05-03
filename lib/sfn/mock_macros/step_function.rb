@@ -11,7 +11,7 @@ module Sfn
           else
             val[:output] ||= val[:payload]
             val[:output] ||= val[:response]
-            { Return: { Output: val[:output].to_json, Status: "SUCCEDED" } }
+            { Return: { Output: val[:output].to_json, Status: 'SUCCEDED' } }
           end
         end
         out = {}

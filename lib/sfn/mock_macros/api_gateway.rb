@@ -12,7 +12,7 @@ module Sfn
             val[:response] ||= val[:payload]
             val[:response] ||= val[:output]
             { Return: { Headers: val[:headers], ResponseBody: val[:response], StatusCode: val[:status],
-                        StatusText: "OK" } }
+                        StatusText: 'OK' } }
           end
         end
         out = {}

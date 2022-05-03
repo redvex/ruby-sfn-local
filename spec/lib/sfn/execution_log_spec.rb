@@ -1,56 +1,58 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::ExecutionLog' do
   describe '.parse' do
-    let(:arn) { "some_valid_arn" }
-    let(:expected_output) { "World" }
+    let(:arn) { 'some_valid_arn' }
+    let(:expected_output) { 'World' }
     let(:expected_profile) do
       {
-        "Hello" => {
+        'Hello' => {
           input: [{}],
           output: [{}]
         },
-        "World" => {
+        'World' => {
           input: [{}],
-          output: ["World"]
+          output: ['World']
         }
       }
     end
-    it { expect(Sfn::ExecutionLog.parse(arn)).to eq([expected_output, expected_profile])}
+    it { expect(Sfn::ExecutionLog.parse(arn)).to eq([expected_output, expected_profile]) }
   end
 
   context 'instance methods' do
     subject { Sfn::ExecutionLog.new(event) }
     describe '#state_name' do
       context 'when a stateEnteredEventDetails event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "stateEnteredEventDetails" => {
-              "name" => "hello"
-            }, 
-            "stateExitedEventDetails" => nil
+            'stateEnteredEventDetails' => {
+              'name' => 'hello'
+            },
+            'stateExitedEventDetails' => nil
           }
         end
-        it { expect(subject.state_name).to eq("hello") }
+        it { expect(subject.state_name).to eq('hello') }
       end
 
       context 'when a stateExitedEventDetails event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "stateEnteredEventDetails" => nil, 
-            "stateExitedEventDetails" => {
-              "name" => "hello"
+            'stateEnteredEventDetails' => nil,
+            'stateExitedEventDetails' => {
+              'name' => 'hello'
             }
           }
         end
-        it { expect(subject.state_name).to eq("hello") }
+        it { expect(subject.state_name).to eq('hello') }
       end
 
       context 'when another event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "stateEnteredEventDetails" => nil, 
-            "stateExitedEventDetails" => nil
+            'stateEnteredEventDetails' => nil,
+            'stateExitedEventDetails' => nil
           }
         end
         it { expect(subject.state_name).not_to be }
@@ -61,18 +63,18 @@ describe 'Sfn::ExecutionLog' do
       context 'wheh a executionSucceededEventDetails event is passed' do
         let(:event) do
           {
-            "executionSucceededEventDetails" => {
-              "output" => "\"world\""
+            'executionSucceededEventDetails' => {
+              'output' => '"world"'
             }
           }
         end
-        it { expect(subject.output).to eq("world") }
+        it { expect(subject.output).to eq('world') }
       end
 
       context 'when another event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "executionSucceededEventDetails" => nil
+            'executionSucceededEventDetails' => nil
           }
         end
         it { expect(subject.output).not_to be }
@@ -83,19 +85,19 @@ describe 'Sfn::ExecutionLog' do
       context 'wheh a executionSucceededEventDetails event is passed' do
         let(:event) do
           {
-            "executionFailedEventDetails" => {
-              "error" => "\"401\"",
-              "cause" => "\"User is not authorised\""
+            'executionFailedEventDetails' => {
+              'error' => '"401"',
+              'cause' => '"User is not authorised"'
             }
           }
         end
-        it { expect{subject.error}.to raise_error(Sfn::ExecutionError) }
+        it { expect { subject.error }.to raise_error(Sfn::ExecutionError) }
       end
 
       context 'when another event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "executionFailedEventDetails" => nil
+            'executionFailedEventDetails' => nil
           }
         end
         it { expect(subject.error).not_to be }
@@ -104,37 +106,37 @@ describe 'Sfn::ExecutionLog' do
 
     describe '#profile' do
       context 'when a stateEnteredEventDetails event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "stateEnteredEventDetails" => {
-              "input" => "{}"
-            }, 
-            "stateExitedEventDetails" => nil
+            'stateEnteredEventDetails' => {
+              'input' => '{}'
+            },
+            'stateExitedEventDetails' => nil
           }
         end
         it { expect(subject.profile).to eq({ input: {} }) }
       end
 
       context 'when a stateExitedEventDetails event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "stateEnteredEventDetails" => nil, 
-            "stateExitedEventDetails" => {
-              "output" => "\"world\""
+            'stateEnteredEventDetails' => nil,
+            'stateExitedEventDetails' => {
+              'output' => '"world"'
             }
           }
         end
-        it { expect(subject.profile).to eq( { output: "world" } ) }
+        it { expect(subject.profile).to eq({ output: 'world' }) }
       end
 
       context 'when another event is passed' do
-        let(:event) do 
+        let(:event) do
           {
-            "stateEnteredEventDetails" => nil, 
-            "stateExitedEventDetails" => nil
+            'stateEnteredEventDetails' => nil,
+            'stateExitedEventDetails' => nil
           }
         end
-        it { expect(subject.profile).to eq( {} ) }
+        it { expect(subject.profile).to eq({}) }
       end
     end
   end

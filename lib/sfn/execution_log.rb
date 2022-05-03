@@ -20,8 +20,8 @@ module Sfn
       profile = {}
       output = nil
       error = nil
-      events_json = AwsCli.run("stepfunctions", "get-execution-history",
-                               { "execution-arn": execution_arn.to_s, query: "'events[?#{EVENTS.join(' || ')}]'" })
+      events_json = AwsCli.run('stepfunctions', 'get-execution-history',
+                               { 'execution-arn': execution_arn.to_s, query: "'events[?#{EVENTS.join(' || ')}]'" })
       JSON.parse(events_json).each do |event|
         parsed_event = new(event)
 
@@ -29,11 +29,11 @@ module Sfn
         error  ||= parsed_event.error(events_json)
         state_name = parsed_event.state_name
 
-        unless state_name.nil?
-          profile[state_name] ||= { input: [], output: [] }
-          profile[state_name][:input] << parsed_event.profile[:input] unless parsed_event.profile[:input].nil?
-          profile[state_name][:output] << parsed_event.profile[:output] unless parsed_event.profile[:output].nil?
-        end
+        next if state_name.nil?
+
+        profile[state_name] ||= { input: [], output: [] }
+        profile[state_name][:input] << parsed_event.profile[:input] unless parsed_event.profile[:input].nil?
+        profile[state_name][:output] << parsed_event.profile[:output] unless parsed_event.profile[:output].nil?
       end
       [output, profile]
     end
@@ -43,25 +43,25 @@ module Sfn
     end
 
     def state_name
-      event.dig("stateEnteredEventDetails", "name") || event.dig("stateExitedEventDetails", "name")
+      event.dig('stateEnteredEventDetails', 'name') || event.dig('stateExitedEventDetails', 'name')
     end
 
     def output
-      try_parse(event.dig("executionSucceededEventDetails", "output"))
+      try_parse(event.dig('executionSucceededEventDetails', 'output'))
     end
 
-    def error(events_json="{}")
-      return if event["executionFailedEventDetails"].nil?
+    def error(events_json = '{}')
+      return if event['executionFailedEventDetails'].nil?
 
-      raise ExecutionError.new(event["executionFailedEventDetails"]["cause"],
-                               event["executionFailedEventDetails"]["error"],
+      raise ExecutionError.new(event['executionFailedEventDetails']['cause'],
+                               event['executionFailedEventDetails']['error'],
                                events_json)
     end
 
     def profile
       {
-        input: try_parse(event.dig("stateEnteredEventDetails", "input")),
-        output: try_parse(event.dig("stateExitedEventDetails", "output"))
+        input: try_parse(event.dig('stateEnteredEventDetails', 'input')),
+        output: try_parse(event.dig('stateExitedEventDetails', 'output'))
       }.compact
     end
 

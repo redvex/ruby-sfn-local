@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::MockMacros::Sns' do
   describe '.response' do
-    let(:uuid) { "8ca69717-1b5e-419a-a74c-1357b9208ce6" }
-    before {
+    let(:uuid) { '8ca69717-1b5e-419a-a74c-1357b9208ce6' }
+    before do
       allow(SecureRandom).to receive(:uuid).and_return(uuid)
-    }
+    end
     context 'data is an hash' do
       context 'status is 200' do
         let(:data) do
           {
-            status: 200 
+            status: 200
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Return: {
                 MessageId: uuid,
                 SequenceNumber: 10_000_000_000_000_003_000
@@ -30,16 +32,16 @@ describe 'Sfn::MockMacros::Sns' do
       context 'status is not 200' do
         let(:data) do
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Throw: {
-                Error: "401", 
-                Cause: "User not authorised"
+                Error: '401',
+                Cause: 'User not authorised'
               }
             }
           }
@@ -53,8 +55,8 @@ describe 'Sfn::MockMacros::Sns' do
       let(:data) do
         [
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           },
           {
             status: 200
@@ -63,13 +65,13 @@ describe 'Sfn::MockMacros::Sns' do
       end
       let(:expected_response) do
         {
-          "0" => {
+          '0' => {
             Throw: {
-              Error: "401", 
-              Cause: "User not authorised"
+              Error: '401',
+              Cause: 'User not authorised'
             }
           },
-          "1" => {
+          '1' => {
             Return: {
               MessageId: uuid,
               SequenceNumber: 10_000_000_000_000_003_000

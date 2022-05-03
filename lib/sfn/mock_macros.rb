@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "sfn/mock_macros/lambda"
-require "sfn/mock_macros/step_function"
-require "sfn/mock_macros/api_gateway"
-require "sfn/mock_macros/sns"
+require 'sfn/mock_macros/lambda'
+require 'sfn/mock_macros/step_function'
+require 'sfn/mock_macros/api_gateway'
+require 'sfn/mock_macros/sns'
 
 module Sfn
   module MockMacros
@@ -29,22 +29,22 @@ module Sfn
     end
 
     def self.gateway_payload(data)
-      warn "[DEPRECATION] `gateway_payload` is deprecated.  Please use `gateway_response` instead."
+      warn '[DEPRECATION] `gateway_payload` is deprecated.  Please use `gateway_response` instead.'
       ApiGateway.response(data)
     end
 
     def self.lambda_payload(data)
-      warn "[DEPRECATION] `lambda_payload` is deprecated.  Please use `lambda_response` instead."
+      warn '[DEPRECATION] `lambda_payload` is deprecated.  Please use `lambda_response` instead.'
       Lambda.response(data)
     end
 
     def self.sns_payload(data)
-      warn "[DEPRECATION] `sns_payload` is deprecated.  Please use `sns_response` instead."
+      warn '[DEPRECATION] `sns_payload` is deprecated.  Please use `sns_response` instead.'
       Sns.response(data)
     end
 
     def self.step_function_payload(data)
-      warn "[DEPRECATION] `step_function_payload` is deprecated.  Please use `step_function_response` instead."
+      warn '[DEPRECATION] `step_function_payload` is deprecated.  Please use `step_function_response` instead.'
       StepFunction.response(data)
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::MockMacros::ApiGateway' do
@@ -7,18 +9,18 @@ describe 'Sfn::MockMacros::ApiGateway' do
         let(:data) do
           {
             status: 200,
-            headers: { "Content-Type": "application/json" },
-            response: "some response" 
+            headers: { 'Content-Type': 'application/json' },
+            response: 'some response'
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Return: {
-                Headers: { "Content-Type": "application/json" }, 
-                ResponseBody: "some response", 
+                Headers: { 'Content-Type': 'application/json' },
+                ResponseBody: 'some response',
                 StatusCode: 200,
-                StatusText: "OK"
+                StatusText: 'OK'
               }
             }
           }
@@ -30,16 +32,16 @@ describe 'Sfn::MockMacros::ApiGateway' do
       context 'status is not 200' do
         let(:data) do
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           }
         end
         let(:expected_response) do
           {
-            "0" => {
+            '0' => {
               Throw: {
-                Error: "401", 
-                Cause: "User not authorised"
+                Error: '401',
+                Cause: 'User not authorised'
               }
             }
           }
@@ -53,30 +55,30 @@ describe 'Sfn::MockMacros::ApiGateway' do
       let(:data) do
         [
           {
-            error: "401",
-            cause: "User not authorised" 
+            error: '401',
+            cause: 'User not authorised'
           },
           {
             status: 200,
-            headers: { "Content-Type": "application/json" },
-            response: "some response" 
+            headers: { 'Content-Type': 'application/json' },
+            response: 'some response'
           }
         ]
       end
       let(:expected_response) do
         {
-          "0" => {
+          '0' => {
             Throw: {
-              Error: "401", 
-              Cause: "User not authorised"
+              Error: '401',
+              Cause: 'User not authorised'
             }
           },
-          "1" => {
+          '1' => {
             Return: {
-              Headers: { "Content-Type": "application/json" }, 
-              ResponseBody: "some response", 
+              Headers: { 'Content-Type': 'application/json' },
+              ResponseBody: 'some response',
               StatusCode: 200,
-              StatusText: "OK"
+              StatusText: 'OK'
             }
           }
         }

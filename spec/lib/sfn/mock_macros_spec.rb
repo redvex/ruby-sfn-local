@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::MockMacros' do
-  let(:data) { "some data" }
+  let(:data) { 'some data' }
+  let(:deprecation_msg) do
+    "[DEPRECATION] `#{method}_payload` is deprecated.  Please use `#{method}_response` instead."
+  end
   describe 'macros' do
     describe '.gateway_response' do
       it { expect(Sfn::MockMacros).to respond_to(:gateway_response).with(1).argument }
@@ -35,34 +40,38 @@ describe 'Sfn::MockMacros' do
 
   describe 'legacy_macro' do
     describe '.gateway_payload' do
+      let(:method) { 'gateway' }
       it { expect(Sfn::MockMacros).to respond_to(:gateway_payload).with(1).argument }
       it 'call Sfn::MockMacros::ApiGateway.response' do
         expect(Sfn::MockMacros::ApiGateway).to receive(:response).with(data)
-        expect(Sfn::MockMacros).to receive(:warn).with("[DEPRECATION] `gateway_payload` is deprecated.  Please use `gateway_response` instead.")
+        expect(Sfn::MockMacros).to receive(:warn).with(deprecation_msg)
         Sfn::MockMacros.gateway_payload(data)
       end
     end
     describe '.lambda_payload' do
+      let(:method) { 'lambda' }
       it { expect(Sfn::MockMacros).to respond_to(:lambda_payload).with(1).argument }
       it 'call Sfn::MockMacros::Lambda.response' do
         expect(Sfn::MockMacros::Lambda).to receive(:response).with(data)
-        expect(Sfn::MockMacros).to receive(:warn).with("[DEPRECATION] `lambda_payload` is deprecated.  Please use `lambda_response` instead.")
+        expect(Sfn::MockMacros).to receive(:warn).with(deprecation_msg)
         Sfn::MockMacros.lambda_payload(data)
       end
     end
     describe '.sns_payload' do
+      let(:method) { 'sns' }
       it { expect(Sfn::MockMacros).to respond_to(:sns_payload).with(1).argument }
       it 'call Sfn::MockMacros::Sns.response' do
         expect(Sfn::MockMacros::Sns).to receive(:response).with(data)
-        expect(Sfn::MockMacros).to receive(:warn).with("[DEPRECATION] `sns_payload` is deprecated.  Please use `sns_response` instead.")
+        expect(Sfn::MockMacros).to receive(:warn).with(deprecation_msg)
         Sfn::MockMacros.sns_payload(data)
       end
     end
     describe '.step_function_payload' do
+      let(:method) { 'step_function' }
       it { expect(Sfn::MockMacros).to respond_to(:step_function_payload).with(1).argument }
       it 'call Sfn::MockMacros::StepFunction.response' do
         expect(Sfn::MockMacros::StepFunction).to receive(:response).with(data)
-        expect(Sfn::MockMacros).to receive(:warn).with("[DEPRECATION] `step_function_payload` is deprecated.  Please use `step_function_response` instead.")
+        expect(Sfn::MockMacros).to receive(:warn).with(deprecation_msg)
         Sfn::MockMacros.step_function_payload(data)
       end
     end

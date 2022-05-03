@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Sfn::Execution' do
-  let(:state_machine) { Sfn::StateMachine.new("hello") }
-  let(:mock_data) { {"mock": {"Return": "data"} } }
-  let(:input) { {foo: "bar"} }
-  subject { Sfn::Execution.new(state_machine, "test_case") }
+  let(:state_machine) { Sfn::StateMachine.new('hello') }
+  let(:mock_data) { { mock: { Return: 'data' } } }
+  let(:input) { { foo: 'bar' } }
+  subject { Sfn::Execution.new(state_machine, 'test_case') }
 
   describe '.new' do
     it { expect(subject.uuid).to be }
     it { expect(subject.state_machine).to be(state_machine) }
-    it { expect(subject.test_case).to eq("TestCase") }
+    it { expect(subject.test_case).to eq('TestCase') }
   end
 
   describe '.call' do
