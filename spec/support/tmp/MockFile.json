@@ -1,0 +1,15 @@
+{
+  "StateMachines": {
+    "test": {
+      "TestCases": {
+        "FpPuXXlBo4FXxXXxC": {
+          "foo": "bar"
+        }
+      }
+    }
+  },
+  "MockedResponses": {
+    "bar": {
+    }
+  }
+}

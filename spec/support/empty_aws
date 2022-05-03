@@ -1,0 +1,7 @@
+#!/bin/env ruby
+require 'json'
+
+case ARGV[1]
+when 'list-state-machines'
+  puts '{"sdkResponseMetadata":null,"sdkHttpMetadata":null,"stateMachines":[],"nextToken":null}'
+end
