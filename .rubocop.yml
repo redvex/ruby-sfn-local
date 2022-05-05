@@ -3,7 +3,7 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   NewCops: enable
   Exclude:
-  - spec/support/aws*
+  - spec/support/*aws
 
 Style/OpenStructUse:
   Enabled: false

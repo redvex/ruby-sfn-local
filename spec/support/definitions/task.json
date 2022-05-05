@@ -1,0 +1,56 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Get Sessions",
+  "States": {
+    "Get Sessions": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "tfurx8v4m7.execute-api.eu-west-1.amazonaws.com",
+        "Method": "GET",
+        "Headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "Stage": "v1",
+        "Path.$": "States.Format('/schools/{}/sessions/summary', $$.Execution.Input.school_id)",
+        "QueryParameters": {
+          "data_start.$": "States.Array($$.Execution.Input.data_start)",
+          "data_end.$": "States.Array($$.Execution.Input.data_end)"
+        }
+      },
+      "Next": "Set Session Status",
+      "OutputPath": "$.ResponseBody"
+    },
+    "Set Session Status": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "tfurx8v4m7.execute-api.eu-west-1.amazonaws.com",
+        "Method": "PUT",
+        "Headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "Stage": "v1",
+        "Path.$": "States.Format('/schools/{}/sessions/bulk_updates', $$.Execution.Input.school_id)",
+        "RequestBody": {
+          "sessions_ids.$": "$.sessions_ids",
+          "status": "processing"
+        }
+      },
+      "ResultPath": null,
+      "Next": "Fake output"
+    },
+    "Fake output": {
+      "Type": "Pass",
+      "End": true,
+      "Parameters": {
+        "id": 1,
+        "status": "sent"
+      }
+    }
+  }
+}

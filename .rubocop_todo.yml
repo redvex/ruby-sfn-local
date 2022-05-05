@@ -6,24 +6,33 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 7
-# Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
 Metrics/AbcSize:
-  Max: 31
+  Exclude:
+    - 'lib/sfn/aws_cli.rb'
+    - 'lib/sfn/execution_log.rb'
+    - 'lib/sfn/mock_data.rb'
+    - 'lib/sfn/mock_macros/*.rb'
 
-# Offense count: 1
-# Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
   Exclude:
     - 'lib/sfn/execution_log.rb'
 
-# Offense count: 5
-# Configuration parameters: CountComments, CountAsOne, ExcludedMethods, IgnoredMethods.
-Metrics/MethodLength:
-  Max: 16
+Layout/LineLength:
+  Exclude:
+    - 'lib/sfn/execution_log.rb'
+    - 'spec/lib/sfn/execution_log_spec.rb'
 
-# Offense count: 14
-# Configuration parameters: AllowedConstants.
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'lib/sfn/execution_log.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/sfn/aws_cli.rb'
+    - 'lib/sfn/execution_log.rb'
+    - 'lib/sfn/mock_data.rb'
+    - 'lib/sfn/mock_macros/*.rb'
+
 Style/Documentation:
   Exclude:
     - 'spec/**/*'

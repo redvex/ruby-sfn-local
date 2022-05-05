@@ -15,11 +15,13 @@ module Sfn
     attr_accessor :event
 
     EVENTS = %w[stateEnteredEventDetails stateExitedEventDetails executionSucceededEventDetails
-                executionFailedEventDetails].freeze
+                executionFailedEventDetails taskScheduledEventDetails].freeze
+
     def self.parse(execution_arn)
       profile = {}
       output = nil
       error = nil
+      state_name = nil
       events_json = AwsCli.run('stepfunctions', 'get-execution-history',
                                { 'execution-arn': execution_arn.to_s, query: "'events[?#{EVENTS.join(' || ')}]'" })
       JSON.parse(events_json).each do |event|
@@ -27,13 +29,17 @@ module Sfn
 
         output ||= parsed_event.output
         error  ||= parsed_event.error(events_json)
+        last_state_name = state_name
         state_name = parsed_event.state_name
 
-        next if state_name.nil?
-
-        profile[state_name] ||= { input: [], output: [] }
-        profile[state_name][:input] << parsed_event.profile[:input] unless parsed_event.profile[:input].nil?
-        profile[state_name][:output] << parsed_event.profile[:output] unless parsed_event.profile[:output].nil?
+        unless state_name.nil?
+          profile[state_name] ||= { input: [], output: [], parameters: [] }
+          profile[state_name][:input] << parsed_event.profile[:input] unless parsed_event.profile[:input].nil?
+          profile[state_name][:output] << parsed_event.profile[:output] unless parsed_event.profile[:output].nil?
+        end
+        if !last_state_name.nil? && !parsed_event.profile[:parameters].nil?
+          profile[last_state_name][:parameters] << parsed_event.profile[:parameters]
+        end
       end
       [output, profile]
     end
@@ -61,7 +67,8 @@ module Sfn
     def profile
       {
         input: try_parse(event.dig('stateEnteredEventDetails', 'input')),
-        output: try_parse(event.dig('stateExitedEventDetails', 'output'))
+        output: try_parse(event.dig('stateExitedEventDetails', 'output')),
+        parameters: try_parse(event.dig('taskScheduledEventDetails', 'parameters'))
       }.compact
     end
 

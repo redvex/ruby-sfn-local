@@ -4,17 +4,61 @@ require 'spec_helper'
 
 describe 'Sfn::ExecutionLog' do
   describe '.parse' do
+    before do
+      Sfn.configure do |sf_config|
+        sf_config.aws_command = './spec/support/task_aws'
+      end
+    end
+    after do
+      Sfn.configure do |sf_config|
+        sf_config.aws_command = './spec/support/aws'
+        sf_config.definition_path = './spec/support/definitions'
+        sf_config.mock_file_path = './spec/support/tmp/MockFile.json'
+      end
+    end
     let(:arn) { 'some_valid_arn' }
-    let(:expected_output) { 'World' }
+    let(:expected_output) do
+      {
+        'id' => 1,
+        'status' => 'sent'
+      }
+    end
     let(:expected_profile) do
       {
-        'Hello' => {
-          input: [{}],
-          output: [{}]
+        'Get Sessions' => {
+          input: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'school_id' => 1 }],
+          output: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                     'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+          parameters: [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                         'Method' => 'GET',
+                         'Headers' => { 'Content-Type' => ['application/json'] },
+                         'Stage' => 'v1',
+                         'QueryParameters' => {
+                           'data_end' => ['2022-01-31'],
+                           'data_start' => ['2022-01-01']
+                         },
+                         'Path' => '/schools/1/sessions/summary' }]
         },
-        'World' => {
-          input: [{}],
-          output: ['World']
+        'Set Session Status' => {
+          input: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                    'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+          output: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                     'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+          parameters: [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                         'Method' => 'PUT',
+                         'Headers' => { 'Content-Type' => ['application/json'] },
+                         'Stage' => 'v1',
+                         'RequestBody' => {
+                           'status' => 'processing',
+                           'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                         },
+                         'Path' => '/schools/1/sessions/bulk_updates' }]
+        },
+        'Fake output' => {
+          input: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                    'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+          output: [{ 'id' => 1, 'status' => 'sent' }],
+          parameters: []
         }
       }
     end
@@ -127,6 +171,33 @@ describe 'Sfn::ExecutionLog' do
           }
         end
         it { expect(subject.profile).to eq({ output: 'world' }) }
+      end
+
+      context 'when a stateExitedEventDetails event is passed' do
+        let(:event) do
+          {
+            'taskScheduledEventDetails' => {
+              'resourceType' => 'apigateway',
+              'resource' => 'invoke',
+              'region' => 'eu-west-1',
+              'parameters' => '{"ApiEndpoint":"abcde1f2g3.execute-api.eu-west-1.amazonaws.com","Method":"GET","Headers":{"Content-Type":["application/json"]},"Stage":"v1","QueryParameters":{"data_end":["2022-01-31"],"data_start":["2022-01-01"]},"Path":"/schools/1/sessions/summary"}'
+            }
+          }
+        end
+
+        it {
+          expect(subject.profile).to eq({ parameters: {
+                                          'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                                          'Method' => 'GET',
+                                          'Headers' => { 'Content-Type' => ['application/json'] },
+                                          'Stage' => 'v1',
+                                          'QueryParameters' => {
+                                            'data_end' => ['2022-01-31'],
+                                            'data_start' => ['2022-01-01']
+                                          },
+                                          'Path' => '/schools/1/sessions/summary'
+                                        } })
+        }
       end
 
       context 'when another event is passed' do

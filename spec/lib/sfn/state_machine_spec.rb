@@ -30,7 +30,7 @@ describe 'Sfn::StateMachine' do
 
   context 'class methods based on collection' do
     describe '.all' do
-      it { expect(Sfn::StateMachine.all.count).to eq(4) }
+      it { expect(Sfn::StateMachine.all.count).to eq(3) }
     end
 
     describe '.find_by_name' do
@@ -42,10 +42,10 @@ describe 'Sfn::StateMachine' do
     end
 
     describe '.find_by_arn' do
-      subject { Sfn::StateMachine.find_by_arn('arn:aws:states:eu-west-1:123456789012:stateMachine:foo') }
+      subject { Sfn::StateMachine.find_by_arn('arn:aws:states:eu-west-1:123456789012:stateMachine:test') }
 
-      it { expect(subject.name).to eq('foo') }
-      it { expect(subject.arn).to eq('arn:aws:states:eu-west-1:123456789012:stateMachine:foo') }
+      it { expect(subject.name).to eq('test') }
+      it { expect(subject.arn).to eq('arn:aws:states:eu-west-1:123456789012:stateMachine:test') }
       it { expect(subject.executions).to eq({}) }
     end
 
