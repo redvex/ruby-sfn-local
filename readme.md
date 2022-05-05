@@ -51,19 +51,17 @@ To run a state machine:
 execution = state_machine.run(mock_data, input)
 ```
 
-The `execution` object has three properties:
+The `execution` object has two properties:
+`output`: contains the output of the state machine execution if it returns with success
+`profile`: contains an inputs, outputs and parameters as described below:
+
 ```
 {
-    "output" => {}, # contains the output of the state machine execution if it returns with success
-    "profile" => {
-        "input" => [], # contains an array of state inputs (one for each exection)
-        "output" => [], # contains an array of state output (one for each exection)
-        "parameters" => [], # contains an array of task parameters (one for each exection)
-    }
+    "input" => [], # contains an array of state inputs (one for each exection)
+    "output" => [], # contains an array of state output (one for each exection)
+    "parameters" => [], # contains an array of task parameters (one for each exection)
 }
 ```
-`output`: 
-`profile`: contains input, output and parameters for every state
 
 If the state machine return an error during the execution, a `Sfn::ExecutionError` exception is raised.
 
