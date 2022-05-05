@@ -52,9 +52,18 @@ execution = state_machine.run(mock_data, input)
 ```
 
 The `execution` object has three properties:
-`output`: contains the output of the state machine execution if it returns with success
-`profile`: contains input and output of every states of the state machine
-`parameters`: contains the parameters with which the task has been called
+```
+{
+    "output" => {}, # contains the output of the state machine execution if it returns with success
+    "profile" => {
+        "input" => [], # contains an array of state inputs (one for each exection)
+        "output" => [], # contains an array of state output (one for each exection)
+        "parameters" => [], # contains an array of task parameters (one for each exection)
+    }
+}
+```
+`output`: 
+`profile`: contains input, output and parameters for every state
 
 If the state machine return an error during the execution, a `Sfn::ExecutionError` exception is raised.
 
@@ -143,6 +152,39 @@ SNS response can be generated using an hash like:
     "required": []
 }
 ```
+
+## Use in conjunction with RSpec
+This library is meant primarly to unit test state machines. Be sure to include and configure the library in the `spec_helper.rb` file
+```
+require "rspec"
+require "sfn"
+
+RSpec.configure do |config|
+  Sfn.configure do |sfn_config|
+    sfn_config.aws_endpoint = ENV.fetch("AWS_ENDPOINT", nil)
+    sfn_config.mock_file_path = "./tmp/MockConfigFile.json"
+    sfn_config.definition_path = "./step_definitions"
+  end
+
+  config.include Sfn::MockMacros
+
+  config.before(:suite) do
+    Sfn::StateMachine.destroy_all
+  end
+
+  config.after(:suite) do
+    Sfn::StateMachine.destroy_all
+  end
+end
+```
+To ensure the environment is clear after each execution, it's important to destroy all the state machine before and after the test suite.
+
+It's good practice to test each path in the state machine using contexts. For each path the test should cover:
+1. The state machine output for successful execution.
+2. Exceptions raised for failure execution.
+3. The pass state input/output to be sure the data are transformed properly.
+4. The task state parameters to be sure the task is invoked with the right parameters.
+
 
 ## Versioning
 

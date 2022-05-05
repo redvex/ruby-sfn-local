@@ -33,12 +33,12 @@ module Sfn
         state_name = parsed_event.state_name
 
         unless state_name.nil?
-          profile[state_name] ||= { input: [], output: [], parameters: [] }
-          profile[state_name][:input] << parsed_event.profile[:input] unless parsed_event.profile[:input].nil?
-          profile[state_name][:output] << parsed_event.profile[:output] unless parsed_event.profile[:output].nil?
+          profile[state_name] ||= { 'input' => [], 'output' => [], 'parameters' => [] }
+          profile[state_name]['input'] << parsed_event.profile['input'] unless parsed_event.profile['input'].nil?
+          profile[state_name]['output'] << parsed_event.profile['output'] unless parsed_event.profile['output'].nil?
         end
-        if !last_state_name.nil? && !parsed_event.profile[:parameters].nil?
-          profile[last_state_name][:parameters] << parsed_event.profile[:parameters]
+        if !last_state_name.nil? && !parsed_event.profile['parameters'].nil?
+          profile[last_state_name]['parameters'] << parsed_event.profile['parameters']
         end
       end
       [output, profile]
@@ -66,9 +66,9 @@ module Sfn
 
     def profile
       {
-        input: try_parse(event.dig('stateEnteredEventDetails', 'input')),
-        output: try_parse(event.dig('stateExitedEventDetails', 'output')),
-        parameters: try_parse(event.dig('taskScheduledEventDetails', 'parameters'))
+        'input' => try_parse(event.dig('stateEnteredEventDetails', 'input')),
+        'output' => try_parse(event.dig('stateExitedEventDetails', 'output')),
+        'parameters' => try_parse(event.dig('taskScheduledEventDetails', 'parameters'))
       }.compact
     end
 

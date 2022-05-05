@@ -26,10 +26,10 @@ describe 'Sfn::ExecutionLog' do
     let(:expected_profile) do
       {
         'Get Sessions' => {
-          input: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'school_id' => 1 }],
-          output: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+          'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'school_id' => 1 }],
+          'output' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
                      'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          parameters: [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+          'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
                          'Method' => 'GET',
                          'Headers' => { 'Content-Type' => ['application/json'] },
                          'Stage' => 'v1',
@@ -40,11 +40,11 @@ describe 'Sfn::ExecutionLog' do
                          'Path' => '/schools/1/sessions/summary' }]
         },
         'Set Session Status' => {
-          input: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+          'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
                     'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          output: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+          'output' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
                      'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          parameters: [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+          'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
                          'Method' => 'PUT',
                          'Headers' => { 'Content-Type' => ['application/json'] },
                          'Stage' => 'v1',
@@ -55,10 +55,10 @@ describe 'Sfn::ExecutionLog' do
                          'Path' => '/schools/1/sessions/bulk_updates' }]
         },
         'Fake output' => {
-          input: [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+          'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
                     'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          output: [{ 'id' => 1, 'status' => 'sent' }],
-          parameters: []
+          'output' => [{ 'id' => 1, 'status' => 'sent' }],
+          'parameters' => []
         }
       }
     end
@@ -158,7 +158,7 @@ describe 'Sfn::ExecutionLog' do
             'stateExitedEventDetails' => nil
           }
         end
-        it { expect(subject.profile).to eq({ input: {} }) }
+        it { expect(subject.profile).to eq({ 'input' => {} }) }
       end
 
       context 'when a stateExitedEventDetails event is passed' do
@@ -170,7 +170,7 @@ describe 'Sfn::ExecutionLog' do
             }
           }
         end
-        it { expect(subject.profile).to eq({ output: 'world' }) }
+        it { expect(subject.profile).to eq({ 'output' => 'world' }) }
       end
 
       context 'when a stateExitedEventDetails event is passed' do
@@ -186,7 +186,7 @@ describe 'Sfn::ExecutionLog' do
         end
 
         it {
-          expect(subject.profile).to eq({ parameters: {
+          expect(subject.profile).to eq({ 'parameters' => {
                                           'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
                                           'Method' => 'GET',
                                           'Headers' => { 'Content-Type' => ['application/json'] },

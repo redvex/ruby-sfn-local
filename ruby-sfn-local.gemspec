@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name                  = 'ruby-sfn-local'
-  s.version               = '0.1.6'
+  s.version               = '0.1.7'
   s.required_ruby_version = '>= 2.7.0'
   s.summary               = 'Step Functions local ruby wrapper!'
   s.description           = 'A convenient gem to test step function locally'
