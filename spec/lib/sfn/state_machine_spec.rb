@@ -9,9 +9,19 @@ describe 'Sfn::StateMachine' do
   describe '.new' do
     subject { Sfn::StateMachine.new(name, arn) }
     context 'the state machine does not exist' do
-      let(:name) { 'hello' }
-      it { expect(subject.name).to eq(name) }
-      it { expect(subject.executions).to eq({}) }
+      context 'when the name contains a path' do
+        let(:name) { 'test/hello' }
+        it { expect(subject.path).to eq("./spec/support/definitions/test/hello.json") }
+        it { expect(subject.name).to eq("hello") }
+        it { expect(subject.executions).to eq({}) }
+      end
+
+      context 'when the name does not contain a path' do
+        let(:name) { 'hello' }
+        it { expect(subject.path).to eq("./spec/support/definitions/hello.json") }
+        it { expect(subject.name).to eq("hello") }
+        it { expect(subject.executions).to eq({}) }
+      end
     end
 
     context 'the state machine exist' do

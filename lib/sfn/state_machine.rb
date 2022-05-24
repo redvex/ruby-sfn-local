@@ -9,7 +9,7 @@ module Sfn
   class StateMachine
     ROLE = 'arn:aws:iam::123456789012:role/DummyRole'
 
-    attr_accessor :name, :definition, :arn, :executions, :execution_arn
+    attr_accessor :name, :path, :definition, :arn, :executions, :execution_arn
 
     def self.all
       Collection.instance.all.map { |sf| new(sf['name'], sf['stateMachineArn']) }
@@ -28,8 +28,9 @@ module Sfn
     end
 
     def initialize(name, arn = nil)
-      self.name = name
-      self.arn = arn || self.class.find_by_name(name)&.arn || create_state_machine
+      self.path = "#{Sfn.configuration.definition_path}/#{name}.json"
+      self.name = name.split("/").last
+      self.arn = arn || self.class.find_by_name(self.name)&.arn || create_state_machine
       self.executions = {}
     end
 
@@ -53,18 +54,17 @@ module Sfn
 
     def create_state_machine
       self.arn = AwsCli.run('stepfunctions', 'create-state-machine',
-                            { definition: load_definition(name), name: name, 'role-arn': ROLE }, 'stateMachineArn')
+                            { definition: load_definition, name: name, 'role-arn': ROLE }, 'stateMachineArn')
       raise Sf::DefinitionError if arn.empty?
 
       Collection.instance.add(to_hash)
       arn
     end
 
-    def load_definition(_name)
+    def load_definition
       local_definition_path = Tempfile.new(['name', '.json']).path
-      remote_definition_path = "#{Sfn.configuration.definition_path}/#{name}.json"
-
-      definition = File.read(remote_definition_path)
+      
+      definition = File.read(self.path)
       local_definition = definition.gsub(/"MaxConcurrency": [0-9]+/, '"MaxConcurrency": 1')
 
       File.open(local_definition_path, 'w') { |file| file.puts local_definition }
