@@ -29,7 +29,7 @@ module Sfn
 
     def initialize(name, arn = nil)
       self.path = "#{Sfn.configuration.definition_path}/#{name}.json"
-      self.name = name.split("/").last
+      self.name = name.split('/').last
       self.arn = arn || self.class.find_by_name(self.name)&.arn || create_state_machine
       self.executions = {}
     end
@@ -41,7 +41,7 @@ module Sfn
     end
 
     def run(mock_data = {}, input = {}, test_name = nil)
-      test_name ||= OpenSSL::Digest::SHA512.digest(mock_data.merge(input).to_json)
+      test_name ||= OpenSSL::Digest::SHA512.digest(mock_data.merge({ input: input }).to_json)
       executions[test_name] ||= Execution.call(self, test_name, mock_data, input)
       executions[test_name]
     end
@@ -63,8 +63,8 @@ module Sfn
 
     def load_definition
       local_definition_path = Tempfile.new(['name', '.json']).path
-      
-      definition = File.read(self.path)
+
+      definition = File.read(path)
       local_definition = definition.gsub(/"MaxConcurrency": [0-9]+/, '"MaxConcurrency": 1')
 
       File.open(local_definition_path, 'w') { |file| file.puts local_definition }

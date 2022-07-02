@@ -29,6 +29,13 @@ describe 'Sfn::MockMacros' do
         Sfn::MockMacros.sns_response(data)
       end
     end
+    describe '.sqs_response' do
+      it { expect(Sfn::MockMacros).to respond_to(:sqs_response).with(1).argument }
+      it 'call Sfn::MockMacros::Sqs.response' do
+        expect(Sfn::MockMacros::Sqs).to receive(:response).with(data)
+        Sfn::MockMacros.sqs_response(data)
+      end
+    end
     describe '.step_function_response' do
       it { expect(Sfn::MockMacros).to respond_to(:step_function_response).with(1).argument }
       it 'call Sfn::MockMacros::StepFunction.response' do

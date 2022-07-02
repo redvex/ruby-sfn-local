@@ -4,6 +4,7 @@ require 'sfn/mock_macros/lambda'
 require 'sfn/mock_macros/step_function'
 require 'sfn/mock_macros/api_gateway'
 require 'sfn/mock_macros/sns'
+require 'sfn/mock_macros/sqs'
 
 module Sfn
   module MockMacros
@@ -11,6 +12,7 @@ module Sfn
     include StepFunction
     include ApiGateway
     include Sns
+    include Sqs
 
     def self.gateway_response(data)
       ApiGateway.response(data)
@@ -22,6 +24,10 @@ module Sfn
 
     def self.sns_response(data)
       Sns.response(data)
+    end
+
+    def self.sqs_response(data)
+      Sqs.response(data)
     end
 
     def self.step_function_response(data)

@@ -19,6 +19,7 @@ module Sfn
 
     def self.parse(execution_arn)
       profile = {}
+      root_state_name = {}
       output = nil
       error = nil
       state_name = nil
@@ -26,19 +27,19 @@ module Sfn
                                { 'execution-arn': execution_arn.to_s, query: "'events[?#{EVENTS.join(' || ')}]'" })
       JSON.parse(events_json).each do |event|
         parsed_event = new(event)
-
         output ||= parsed_event.output
         error  ||= parsed_event.error(events_json)
-        last_state_name = state_name
         state_name = parsed_event.state_name
 
         unless state_name.nil?
           profile[state_name] ||= { 'input' => [], 'output' => [], 'parameters' => [] }
           profile[state_name]['input'] << parsed_event.profile['input'] unless parsed_event.profile['input'].nil?
           profile[state_name]['output'] << parsed_event.profile['output'] unless parsed_event.profile['output'].nil?
+          root_state_name[parsed_event.event['id']] = state_name
         end
-        if !last_state_name.nil? && !parsed_event.profile['parameters'].nil?
-          profile[last_state_name]['parameters'] << parsed_event.profile['parameters']
+
+        if !root_state_name[parsed_event.event['previousEventId']].nil? && !parsed_event.profile['parameters'].nil?
+          profile[root_state_name[parsed_event.event['previousEventId']]]['parameters'] << parsed_event.profile['parameters']
         end
       end
       [output, profile]

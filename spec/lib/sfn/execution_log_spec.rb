@@ -4,65 +4,150 @@ require 'spec_helper'
 
 describe 'Sfn::ExecutionLog' do
   describe '.parse' do
-    before do
-      Sfn.configure do |sf_config|
-        sf_config.aws_command = './spec/support/task_aws'
+    context 'sequential tasks' do
+      before do
+        Sfn.configure do |sf_config|
+          sf_config.aws_command = './spec/support/task_aws'
+        end
       end
-    end
-    after do
-      Sfn.configure do |sf_config|
-        sf_config.aws_command = './spec/support/aws'
-        sf_config.definition_path = './spec/support/definitions'
-        sf_config.mock_file_path = './spec/support/tmp/MockFile.json'
+      after do
+        Sfn.configure do |sf_config|
+          sf_config.aws_command = './spec/support/aws'
+          sf_config.definition_path = './spec/support/definitions'
+          sf_config.mock_file_path = './spec/support/tmp/MockFile.json'
+        end
       end
-    end
-    let(:arn) { 'some_valid_arn' }
-    let(:expected_output) do
-      {
-        'id' => 1,
-        'status' => 'sent'
-      }
-    end
-    let(:expected_profile) do
-      {
-        'Get Sessions' => {
-          'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'school_id' => 1 }],
-          'output' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
-                     'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
-                         'Method' => 'GET',
-                         'Headers' => { 'Content-Type' => ['application/json'] },
-                         'Stage' => 'v1',
-                         'QueryParameters' => {
-                           'data_end' => ['2022-01-31'],
-                           'data_start' => ['2022-01-01']
-                         },
-                         'Path' => '/schools/1/sessions/summary' }]
-        },
-        'Set Session Status' => {
-          'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
-                    'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          'output' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
-                     'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
-                         'Method' => 'PUT',
-                         'Headers' => { 'Content-Type' => ['application/json'] },
-                         'Stage' => 'v1',
-                         'RequestBody' => {
-                           'status' => 'processing',
-                           'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                         },
-                         'Path' => '/schools/1/sessions/bulk_updates' }]
-        },
-        'Fake output' => {
-          'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
-                    'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
-          'output' => [{ 'id' => 1, 'status' => 'sent' }],
-          'parameters' => []
+      let(:arn) { 'some_valid_arn' }
+      let(:expected_output) do
+        {
+          'id' => 1,
+          'status' => 'sent'
         }
-      }
+      end
+      let(:expected_profile) do
+        {
+          'Get Sessions' => {
+            'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'school_id' => 1 }],
+            'output' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                           'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+            'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                               'Method' => 'GET',
+                               'Headers' => { 'Content-Type' => ['application/json'] },
+                               'Stage' => 'v1',
+                               'QueryParameters' => {
+                                 'data_end' => ['2022-01-31'],
+                                 'data_start' => ['2022-01-01']
+                               },
+                               'Path' => '/schools/1/sessions/summary' }]
+          },
+          'Set Session Status' => {
+            'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                          'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+            'output' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                           'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+            'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                               'Method' => 'PUT',
+                               'Headers' => { 'Content-Type' => ['application/json'] },
+                               'Stage' => 'v1',
+                               'RequestBody' => {
+                                 'status' => 'processing',
+                                 'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                               },
+                               'Path' => '/schools/1/sessions/bulk_updates' }]
+          },
+          'Fake output' => {
+            'input' => [{ 'data_start' => '2022-01-01', 'data_end' => '2022-01-31', 'attended' => 9, 'cancelled' => 1,
+                          'sessions_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }],
+            'output' => [{ 'id' => 1, 'status' => 'sent' }],
+            'parameters' => []
+          }
+        }
+      end
+      it { expect(Sfn::ExecutionLog.parse(arn)).to eq([expected_output, expected_profile]) }
     end
-    it { expect(Sfn::ExecutionLog.parse(arn)).to eq([expected_output, expected_profile]) }
+
+    context 'parallel tasks' do
+      before do
+        Sfn.configure do |sf_config|
+          sf_config.aws_command = './spec/support/parallel_aws'
+        end
+      end
+      after do
+        Sfn.configure do |sf_config|
+          sf_config.aws_command = './spec/support/aws'
+          sf_config.definition_path = './spec/support/definitions'
+          sf_config.mock_file_path = './spec/support/tmp/MockFile.json'
+        end
+      end
+      let(:arn) { 'some_valid_arn' }
+      let(:expected_output) do
+        ['Response from API 1', 'Response from API 2', 'Response from API 3']
+      end
+      let(:expected_profile) do
+        {
+          'Parallel' => {
+            'input' => [{}],
+            'output' => [['Response from API 1', 'Response from API 2', 'Response from API 3']],
+            'parameters' => []
+          },
+          'Step 1' => {
+            'input' => [{}],
+            'output' => [{ 'id' => 1, 'foo' => 'bar', 'hello' => 'world' }],
+            'parameters' => []
+          },
+          'Filter 1' => {
+            'input' => [{ 'id' => 1, 'foo' => 'bar', 'hello' => 'world' }],
+            'output' => [1],
+            'parameters' => []
+          },
+          'Api 1' => {
+            'input' => [1],
+            'output' => ['Response from API 1'],
+            'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                               'Method' => 'GET',
+                               'Stage' => 'v1',
+                               'Path' => '/endpoint/1' }]
+          },
+          'Step 2' => {
+            'input' => [{}],
+            'output' => [{ 'id' => 2, 'foo' => 'bear', 'hello' => 'war' }],
+            'parameters' => []
+          },
+          'Filter 2' => {
+            'input' => [{ 'id' => 2, 'foo' => 'bear', 'hello' => 'war' }],
+            'output' => [2],
+            'parameters' => []
+          },
+          'Api 2' => {
+            'input' => [2],
+            'output' => ['Response from API 2'],
+            'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                               'Method' => 'GET',
+                               'Stage' => 'v1',
+                               'Path' => '/endpoint/2' }]
+          },
+          'Step 3' => {
+            'input' => [{}],
+            'output' => [{ 'id' => 3, 'foo' => 'beard', 'hello' => 'wall' }],
+            'parameters' => []
+          },
+          'Filter 3' => {
+            'input' => [{ 'id' => 3, 'foo' => 'beard', 'hello' => 'wall' }],
+            'output' => [3],
+            'parameters' => []
+          },
+          'Api 3' => {
+            'input' => [3],
+            'output' => ['Response from API 3'],
+            'parameters' => [{ 'ApiEndpoint' => 'abcde1f2g3.execute-api.eu-west-1.amazonaws.com',
+                               'Method' => 'GET',
+                               'Stage' => 'v1',
+                               'Path' => '/endpoint/3' }]
+          }
+        }
+      end
+      it { expect(Sfn::ExecutionLog.parse(arn)).to eq([expected_output, expected_profile]) }
+    end
   end
 
   context 'instance methods' do
