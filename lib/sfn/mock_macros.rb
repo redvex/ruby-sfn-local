@@ -6,6 +6,7 @@ require 'sfn/mock_macros/step_function'
 require 'sfn/mock_macros/api_gateway'
 require 'sfn/mock_macros/sns'
 require 'sfn/mock_macros/sqs'
+require 'sfn/mock_macros/secrets_manager'
 
 module Sfn
   module MockMacros
@@ -38,6 +39,10 @@ module Sfn
 
     def self.optimised_step_function_response(data)
       OptimisedStepFunction.response(data)
+    end
+
+    def self.secrets_manager_response(data)
+      SecretsManager.response(data)
     end
 
     def self.gateway_payload(data)
