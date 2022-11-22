@@ -50,6 +50,13 @@ describe 'Sfn::MockMacros' do
         Sfn::MockMacros.optimised_step_function_response(data)
       end
     end
+    describe '.secrets_manager_response' do
+      it { expect(Sfn::MockMacros).to respond_to(:secrets_manager_response).with(1).argument }
+      it 'call Sfn::MockMacros::SecretsManager.response' do
+        expect(Sfn::MockMacros::SecretsManager).to receive(:response).with(data)
+        Sfn::MockMacros.secrets_manager_response(data)
+      end
+    end
   end
 
   describe 'legacy_macro' do

@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name                  = 'ruby-sfn-local'
-  s.version               = '0.1.20'
+  s.version               = '0.1.21'
   s.required_ruby_version = '>= 2.7.0'
   s.summary               = 'Step Functions local ruby wrapper!'
   s.description           = 'A convenient gem to test step function locally'
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     'lib/sfn/mock_macros/sqs.rb',
     'lib/sfn/mock_macros/optimised_step_function.rb',
     'lib/sfn/mock_macros/step_function.rb',
+    'lib/sfn/mock_macros/secrets_manager.rb',
     'lib/sfn/state_machine.rb'
   ]
   s.add_development_dependency 'rake-release', '~> 1.3'
