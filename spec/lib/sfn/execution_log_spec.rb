@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe 'Sfn::ExecutionLog' do
   describe '.parse' do
+    let(:dry_run) { false }
     context 'sequential tasks' do
       before do
         Sfn.configure do |sf_config|
@@ -63,7 +64,7 @@ describe 'Sfn::ExecutionLog' do
           }
         }
       end
-      it { expect(Sfn::ExecutionLog.parse(arn)).to eq([expected_output, expected_profile]) }
+      it { expect(Sfn::ExecutionLog.parse(arn, dry_run)).to eq([expected_output, expected_profile]) }
     end
 
     context 'parallel tasks' do
@@ -211,7 +212,7 @@ describe 'Sfn::ExecutionLog' do
     end
 
     describe '#error' do
-      context 'wheh a executionSucceededEventDetails event is passed' do
+      context 'wheh a executionFailedEventDetails event is passed' do
         let(:event) do
           {
             'executionFailedEventDetails' => {
@@ -220,7 +221,13 @@ describe 'Sfn::ExecutionLog' do
             }
           }
         end
-        it { expect { subject.error }.to raise_error(Sfn::ExecutionError) }
+        context 'when dry_run is false' do
+          it { expect { subject.error(event.to_json, false) }.to raise_error(Sfn::ExecutionError) }
+        end
+
+        context 'when dry_run is true' do
+          it { expect { subject.error(event.to_json, true) }.not_to raise_error }
+        end
       end
 
       context 'when another event is passed' do

@@ -1,0 +1,31 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Map",
+  "States": {
+    "Map": {
+      "Type": "Map",
+      "End": true,
+      "Iterator": {
+        "StartAt": "Wait for interval",
+        "States": {
+          "Wait for interval": {
+            "Type": "Wait",
+            "Seconds": 5,
+            "Next": "Wait for date"
+          },
+          "Wait for date": {
+            "Type": "Wait",
+            "Timestamp": "2021-01-01T00:00:00+00:00",
+            "Next": "Wait for input"
+          },
+          "Wait for input": {
+            "Type": "Wait",
+            "End": true,
+            "TimestampPath": "$$.Execution.Input.date"
+          }
+        }
+      },
+      "MaxConcurrency": 20
+    }
+  }
+}

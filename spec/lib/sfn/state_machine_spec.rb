@@ -71,6 +71,10 @@ describe 'Sfn::StateMachine' do
   context 'instance method' do
     subject { Sfn::StateMachine.new(name, arn) }
 
+    describe '#dry_run' do
+      it { expect(subject.run).to be_an_instance_of(Sfn::Execution) }
+    end
+    
     describe '#run' do
       it { expect(subject.run).to be_an_instance_of(Sfn::Execution) }
     end
@@ -84,6 +88,40 @@ describe 'Sfn::StateMachine' do
         expect(subject.to_hash).to eq({ 'stateMachineArn' => 'arn:aws:states:eu-west-1:123456789012:stateMachine:test',
                                         'name' => 'test' })
       }
+    end
+
+    describe 'load_definition' do
+      let(:name) { 'map_and_wait' }
+      before {
+        local_definition = subject.send(:load_definition)
+        state_machine_file = File.read(local_definition.gsub("file://", ""))
+        @parsed_state_machine = JSON.parse(state_machine_file)
+      }
+
+      it 'sets MaxConcurrency to 1' do
+        expect(@parsed_state_machine["States"]["Map"]["MaxConcurrency"]).to be(1)
+      end
+
+      it 'converts the Wait state to a Pass state and remove the Seconds' do
+        expect(@parsed_state_machine["States"]["Map"]["Iterator"]["States"]["Wait for interval"]).to eq({
+          "Type" => "Pass",
+          "Next" => "Wait for date"
+        })
+      end
+
+      it 'converts the Wait state to a Pass state and remove the Timestamp' do
+        expect(@parsed_state_machine["States"]["Map"]["Iterator"]["States"]["Wait for date"]).to eq({
+          "Type" => "Pass",
+          "Next" => "Wait for input"
+        })
+      end
+
+      it 'converts the Wait state to a Pass state and remove the TimestampPath' do
+        expect(@parsed_state_machine["States"]["Map"]["Iterator"]["States"]["Wait for input"]).to eq({
+          "Type" => "Pass",
+          "End" => true
+        })
+      end
     end
   end
 end

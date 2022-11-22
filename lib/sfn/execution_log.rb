@@ -17,7 +17,7 @@ module Sfn
     EVENTS = %w[stateEnteredEventDetails stateExitedEventDetails executionSucceededEventDetails
                 executionFailedEventDetails taskScheduledEventDetails].freeze
 
-    def self.parse(execution_arn)
+    def self.parse(execution_arn, dry_run = false)
       profile = {}
       root_state_name = {}
       output = nil
@@ -28,7 +28,7 @@ module Sfn
       JSON.parse(events_json).each do |event|
         parsed_event = new(event)
         output ||= parsed_event.output
-        error  ||= parsed_event.error(events_json)
+        error  ||= parsed_event.error(events_json, dry_run)
         state_name = parsed_event.state_name
 
         unless state_name.nil?
@@ -57,12 +57,14 @@ module Sfn
       try_parse(event.dig('executionSucceededEventDetails', 'output'))
     end
 
-    def error(events_json = '{}')
+    def error(events_json = '{}', dry_run = false)
       return if event['executionFailedEventDetails'].nil?
 
       raise ExecutionError.new(event['executionFailedEventDetails']['cause'],
-                               event['executionFailedEventDetails']['error'],
-                               events_json)
+                              event['executionFailedEventDetails']['error'],
+                              events_json) unless dry_run
+      
+      event['executionFailedEventDetails']
     end
 
     def profile

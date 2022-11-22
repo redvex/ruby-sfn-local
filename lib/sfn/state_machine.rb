@@ -40,9 +40,13 @@ module Sfn
       Collection.instance.delete_by_arn(arn)
     end
 
-    def run(mock_data = {}, input = {}, test_name = nil)
+    def dry_run(mock_data = {}, input = {}, test_name = nil)
+      execution = run(mock_data, input, test_name, true)
+    end
+    
+    def run(mock_data = {}, input = {}, test_name = nil, dry_run = false)
       test_name ||= OpenSSL::Digest::SHA512.digest(mock_data.merge({ input: input }).to_json)
-      executions[test_name] ||= Execution.call(self, test_name, mock_data, input)
+      executions[test_name] ||= Execution.call(self, test_name, mock_data, input, dry_run)
       executions[test_name]
     end
 
@@ -65,7 +69,13 @@ module Sfn
       local_definition_path = Tempfile.new(['name', '.json']).path
 
       definition = File.read(path)
-      local_definition = definition.gsub(/"MaxConcurrency": [0-9]+/, '"MaxConcurrency": 1')
+      local_definition = definition
+      local_definition = local_definition.gsub(/"MaxConcurrency": [0-9]+/, '"MaxConcurrency": 1')
+      local_definition = local_definition.gsub(/"Type": "Wait"/, '"Type": "Pass"')
+      local_definition = local_definition.gsub(/"Seconds": [0-9]+,*/, '')
+      local_definition = local_definition.gsub(/"Timestamp": "[0-9\-T:+]+",*/, '')
+      local_definition = local_definition.gsub(/"TimestampPath": "[^\"]+",*/, '')
+      local_definition = local_definition.gsub(/,[\s\n]+\}/, "\n}")
 
       File.open(local_definition_path, 'w') { |file| file.puts local_definition }
       "file://#{local_definition_path}"

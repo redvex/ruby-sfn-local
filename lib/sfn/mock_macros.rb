@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sfn/mock_macros/lambda'
+require 'sfn/mock_macros/optimised_step_function'
 require 'sfn/mock_macros/step_function'
 require 'sfn/mock_macros/api_gateway'
 require 'sfn/mock_macros/sns'
@@ -9,6 +10,7 @@ require 'sfn/mock_macros/sqs'
 module Sfn
   module MockMacros
     include Lambda
+    include OptimisedStepFunction
     include StepFunction
     include ApiGateway
     include Sns
@@ -30,8 +32,12 @@ module Sfn
       Sqs.response(data)
     end
 
-    def self.step_function_response(data)
+    def self.step_function_response(data, optimised = false)
       StepFunction.response(data)
+    end
+
+    def self.optimised_step_function_response(data)
+      OptimisedStepFunction.response(data)
     end
 
     def self.gateway_payload(data)

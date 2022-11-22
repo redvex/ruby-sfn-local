@@ -11,12 +11,13 @@ describe 'Sfn::Execution' do
   describe '.new' do
     it { expect(subject.uuid).to be }
     it { expect(subject.state_machine).to be(state_machine) }
+    it { expect(subject.id).to eq("arn:aws:states:eu-west-1:123456789012:execution:hello:#{subject.uuid}") }
     it { expect(subject.test_case).to eq('TestCase') }
   end
 
   describe '.call' do
     it 'an instance of Sfn::Execution to receive the exec method' do
-      expect_any_instance_of(Sfn::Execution).to receive(:exec).with(mock_data, input)
+      expect_any_instance_of(Sfn::Execution).to receive(:exec).with(mock_data, input, false)
       Sfn::Execution.call(state_machine, 'test_case', mock_data, input)
     end
   end
