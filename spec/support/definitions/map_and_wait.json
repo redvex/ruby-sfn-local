@@ -26,6 +26,23 @@
         }
       },
       "MaxConcurrency": 20
+    },
+    "NewMap": {
+      "Type": "Map",
+      "End": true,
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Pass State",
+        "States": {
+          "State": {
+            "Type": "Pass",
+            "End": true
+          }
+        }
+      },
+      "MaxConcurrency": 20
     }
   }
 }

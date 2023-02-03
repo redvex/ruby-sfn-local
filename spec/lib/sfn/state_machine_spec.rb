@@ -122,6 +122,14 @@ describe 'Sfn::StateMachine' do
           "End" => true
         })
       end
+
+      it 'converts the new Map state to the old one' do
+        expect(@parsed_state_machine["States"]["NewMap"]["ItemProcessor"]).not_to be
+        expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]).to be
+        expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]["Parameters"]).not_to be
+        expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]["ProcessorConfig"]).not_to be
+        expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]["ItemSelector"]).not_to be
+      end
     end
   end
 end
