@@ -125,10 +125,20 @@ describe 'Sfn::StateMachine' do
 
       it 'converts the new Map state to the old one' do
         expect(@parsed_state_machine["States"]["NewMap"]["ItemProcessor"]).not_to be
+        expect(@parsed_state_machine["States"]["NewMap"]["Label"]).not_to be
         expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]).to be
         expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]["Parameters"]).not_to be
         expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]["ProcessorConfig"]).not_to be
         expect(@parsed_state_machine["States"]["NewMap"]["Iterator"]["ItemSelector"]).not_to be
+      end
+
+      it 'converts the new Distributed Map state to the old one' do
+        expect(@parsed_state_machine["States"]["NewDistributedMap"]["ItemProcessor"]).not_to be
+        expect(@parsed_state_machine["States"]["NewDistributedMap"]["Label"]).not_to be
+        expect(@parsed_state_machine["States"]["NewDistributedMap"]["Iterator"]).to be
+        expect(@parsed_state_machine["States"]["NewDistributedMap"]["Iterator"]["Parameters"]).not_to be
+        expect(@parsed_state_machine["States"]["NewDistributedMap"]["Iterator"]["ProcessorConfig"]).not_to be
+        expect(@parsed_state_machine["States"]["NewDistributedMap"]["Iterator"]["ItemSelector"]).not_to be
       end
     end
   end

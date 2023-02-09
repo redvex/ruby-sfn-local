@@ -29,20 +29,39 @@
     },
     "NewMap": {
       "Type": "Map",
-      "End": true,
+      "Next": "NewDistributedMap",
       "ItemProcessor": {
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
         "StartAt": "Pass State",
         "States": {
-          "State": {
+          "Pass State": {
             "Type": "Pass",
             "End": true
           }
         }
       },
       "MaxConcurrency": 20
+    },
+    "NewDistributedMap": {
+      "Type": "Map",
+      "End": true,
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "DISTRIBUTED",
+          "ExecutionType": "STANDARD"
+        },
+        "StartAt": "Pass distributed State",
+        "States": {
+          "Pass distributed State": {
+            "Type": "Pass",
+            "End": true
+          }
+        }
+      },
+      "MaxConcurrency": 20,
+      "Label": "Mapthroughtsomething"
     }
   }
 }

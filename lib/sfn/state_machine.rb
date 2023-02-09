@@ -75,10 +75,11 @@ module Sfn
       local_definition = local_definition.gsub(/"Seconds": [0-9]+,*/, '')
       local_definition = local_definition.gsub(/"Timestamp": "[0-9\-T:+]+",*/, '')
       local_definition = local_definition.gsub(/"TimestampPath": "[^\"]+",*/, '')
-      local_definition = local_definition.gsub(/,[\s\n]+\}/, "\n}")
       local_definition = local_definition.gsub("ItemProcessor", "Iterator")
       local_definition = local_definition.gsub("ItemSelector", "Parameters")
-      local_definition = local_definition.gsub(/"ProcessorConfig":\s+{\n\s+"Mode":\s"[A-Z]+"\n\s+},\n/, "")
+      local_definition = local_definition.gsub(/"ProcessorConfig":\s*{[\s"[A-Za-z:,]]+},*/, "")
+      local_definition = local_definition.gsub(/"Label": "[A-Za-z]+",*/, "")
+      local_definition = local_definition.gsub(/,[\s\n]+\}/, "\n}")
       
       File.open(local_definition_path, 'w') { |file| file.puts local_definition }
       "file://#{local_definition_path}"
