@@ -2,7 +2,7 @@
 
 module Sfn
   class Execution
-    attr_accessor :id, :uuid, :state_machine, :test_case, :arn, :output, :profile
+    attr_accessor :id, :start_date, :uuid, :state_machine, :test_case, :arn, :output, :profile
 
     def self.call(state_machine, test_case, mock_data, input, dry_run = false)
       new(state_machine, test_case).exec(mock_data, input, dry_run)
@@ -17,12 +17,14 @@ module Sfn
 
     def exec(mock_data, input, dry_run = false)
       MockData.write_context(state_machine.name, test_case, mock_data)
-      self.arn = AwsCli.run('stepfunctions', 'start-execution',
+      out = AwsCli.run('stepfunctions', 'start-execution',
                             { name: uuid,
                               'state-machine': "#{state_machine.arn}##{test_case}",
                               input: "'#{input.to_json}'" 
-                            },
-                            'executionArn')
+                            })
+      decoded = JSON.parse(out)
+      self.arn = decoded["executionArn"]
+      self.start_date = decoded["startDate"].gsub("000+00:00", "Z")
       self.output, self.profile = ExecutionLog.parse(arn, dry_run)
       self
     end

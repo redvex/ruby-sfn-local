@@ -12,6 +12,7 @@ describe 'Sfn::Execution' do
     it { expect(subject.uuid).to be }
     it { expect(subject.state_machine).to be(state_machine) }
     it { expect(subject.id).to eq("arn:aws:states:eu-west-1:123456789012:execution:hello:#{subject.uuid}") }
+    it { expect(subject.start_date).not_to be }
     it { expect(subject.test_case).to eq('TestCase') }
   end
 
@@ -25,5 +26,6 @@ describe 'Sfn::Execution' do
   describe '#exec' do
     it { expect(subject.exec(mock_data, input).output).to be }
     it { expect(subject.exec(mock_data, input).profile).to be }
+    it { expect(subject.exec(mock_data, input).start_date).to eq("2022-04-30T03:35:08.683Z") }
   end
 end
