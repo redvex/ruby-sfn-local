@@ -83,7 +83,7 @@ module Sfn
       local_definition = local_definition.gsub(/,[\s\n]+\}/, "\n}")
       local_definition = local_definition.gsub(/(\${[a-z_]+})/) do |variable|
         key = variable.gsub(/[${}]/, '')
-        variables[key]
+        variables[key].to_s || variable
       end
       File.open(local_definition_path, 'w') { |file| file.puts local_definition }
       "file://#{local_definition_path}"
