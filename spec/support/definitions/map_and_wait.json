@@ -58,7 +58,8 @@
             "Type": "Pass",
             "Parameters": {
               "var1": "${variable_one}",
-              "variable_two": "${variable_two}"
+              "var2": "${variable_two}",
+              "var3": "${variable_three}"
             },
             "End": true
           }

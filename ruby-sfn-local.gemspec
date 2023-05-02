@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.authors               = ['Gianni Mazza']
   s.email                 = 'gianni.mazza81rg@gmail.com'
   s.files                 = [
+    'lib/hash.rb',
     'lib/string.rb',
     'lib/sfn.rb',
     'lib/sfn/configuration.rb',

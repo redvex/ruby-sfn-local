@@ -4,7 +4,12 @@ require 'spec_helper'
 
 describe 'Sfn::StateMachine' do
   let(:name) { 'test' }
-  let(:variables) { {} }
+  let(:variables) do
+    {
+      'variable_one' => 'some string',
+      'variable_two' => '5'
+    }
+  end
   let(:arn) { nil }
 
   describe '.new' do
@@ -70,7 +75,7 @@ describe 'Sfn::StateMachine' do
   end
 
   context 'instance method' do
-    subject { Sfn::StateMachine.new(name, {}, arn) }
+    subject { Sfn::StateMachine.new(name, variables, arn) }
 
     describe '#dry_run' do
       it { expect(subject.run).to be_an_instance_of(Sfn::Execution) }
@@ -93,12 +98,6 @@ describe 'Sfn::StateMachine' do
 
     describe 'load_definition' do
       let(:name) { 'map_and_wait' }
-      let(:variables) do
-        {
-          'variable_one' => 'some string',
-          'variable_two' => '5'
-        }
-      end
       before do
         local_definition = subject.send(:load_definition)
         state_machine_file = File.read(local_definition.gsub('file://', ''))
@@ -149,8 +148,9 @@ describe 'Sfn::StateMachine' do
       end
 
       it 'replaces variables' do
-        expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var1']).not_to eq('some string')
-        expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var2']).not_to eq('5')
+        expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var1']).to eq('some string')
+        expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var2']).to eq('5')
+        expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var3']).to eq('${variable_three}')
       end
     end
   end
