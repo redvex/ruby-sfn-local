@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require './lib/ruby-sfn-local/version'
 
 Gem::Specification.new do |s|
   s.name                  = 'ruby-sfn-local'
