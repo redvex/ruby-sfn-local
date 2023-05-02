@@ -9,10 +9,10 @@ module Sfn
   class StateMachine
     ROLE = 'arn:aws:iam::123456789012:role/DummyRole'
 
-    attr_accessor :name, :path, :definition, :arn, :executions, :execution_arn
+    attr_accessor :name, :path, :definition, :arn, :variables, :executions, :execution_arn
 
     def self.all
-      Collection.instance.all.map { |sf| new(sf['name'], sf['stateMachineArn']) }
+      Collection.instance.all.map { |sf| new(sf['name'], nil, sf['stateMachineArn']) }
     end
 
     def self.destroy_all
@@ -27,9 +27,10 @@ module Sfn
       all.find { |sf| sf.arn == arn }
     end
 
-    def initialize(name, arn = nil)
+    def initialize(name, variables = {}, arn = nil)
       self.path = "#{Sfn.configuration.definition_path}/#{name}.json"
       self.name = name.split('/').last
+      self.variables = variables
       self.arn = arn || self.class.find_by_name(self.name)&.arn || create_state_machine
       self.executions = {}
     end
@@ -43,7 +44,7 @@ module Sfn
     def dry_run(mock_data = {}, input = {}, test_name = nil)
       execution = run(mock_data, input, test_name, true)
     end
-    
+
     def run(mock_data = {}, input = {}, test_name = nil, dry_run = false)
       test_name ||= OpenSSL::Digest::SHA512.digest(mock_data.merge({ input: input }).to_json)
       executions[test_name] ||= Execution.call(self, test_name, mock_data, input, dry_run)
@@ -74,13 +75,16 @@ module Sfn
       local_definition = local_definition.gsub(/"Type": "Wait"/, '"Type": "Pass"')
       local_definition = local_definition.gsub(/"Seconds": [0-9]+,*/, '')
       local_definition = local_definition.gsub(/"Timestamp": "[0-9\-T:+]+",*/, '')
-      local_definition = local_definition.gsub(/"TimestampPath": "[^\"]+",*/, '')
-      local_definition = local_definition.gsub("ItemProcessor", "Iterator")
-      local_definition = local_definition.gsub("ItemSelector", "Parameters")
-      local_definition = local_definition.gsub(/"ProcessorConfig":\s*{[\s"[A-Za-z:,]]+},*/, "")
-      local_definition = local_definition.gsub(/"Label": "[A-Za-z]+",*/, "")
+      local_definition = local_definition.gsub(/"TimestampPath": "[^"]+",*/, '')
+      local_definition = local_definition.gsub('ItemProcessor', 'Iterator')
+      local_definition = local_definition.gsub('ItemSelector', 'Parameters')
+      local_definition = local_definition.gsub(/"ProcessorConfig":\s*{[\s"[A-Za-z:,]]+},*/, '')
+      local_definition = local_definition.gsub(/"Label": "[A-Za-z]+",*/, '')
       local_definition = local_definition.gsub(/,[\s\n]+\}/, "\n}")
-      
+      local_definition = local_definition.gsub(/(\${[a-z_]+})/) do |variable|
+        key = variable.gsub(/[${}]/, '')
+        variables[key]
+      end
       File.open(local_definition_path, 'w') { |file| file.puts local_definition }
       "file://#{local_definition_path}"
     end

@@ -33,7 +33,7 @@ module Sfn
       Sqs.response(data)
     end
 
-    def self.step_function_response(data, optimised = false)
+    def self.step_function_response(data, _optimised = false)
       StepFunction.response(data)
     end
 

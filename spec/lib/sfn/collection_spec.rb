@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe 'Sfn::Collection' do
   subject { Class.new(Sfn::Collection).instance }
-  let(:state_machine) { Sfn::StateMachine.new('test', 'arn:aws:states:us-east-1:123456789012:stateMachine:test') }
+  let(:state_machine) { Sfn::StateMachine.new('test', {}, 'arn:aws:states:us-east-1:123456789012:stateMachine:test') }
   let(:aws_cli) { 'empty_aws' }
   before do
     Sfn.configure do |sf_config|

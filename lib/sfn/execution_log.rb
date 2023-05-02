@@ -60,10 +60,12 @@ module Sfn
     def error(events_json = '{}', dry_run = false)
       return if event['executionFailedEventDetails'].nil?
 
-      raise ExecutionError.new(event['executionFailedEventDetails']['cause'],
-                              event['executionFailedEventDetails']['error'],
-                              events_json) unless dry_run
-      
+      unless dry_run
+        raise ExecutionError.new(event['executionFailedEventDetails']['cause'],
+                                 event['executionFailedEventDetails']['error'],
+                                 events_json)
+      end
+
       event['executionFailedEventDetails']
     end
 

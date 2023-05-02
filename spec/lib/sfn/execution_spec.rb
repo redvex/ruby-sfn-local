@@ -26,6 +26,6 @@ describe 'Sfn::Execution' do
   describe '#exec' do
     it { expect(subject.exec(mock_data, input).output).to be }
     it { expect(subject.exec(mock_data, input).profile).to be }
-    it { expect(subject.exec(mock_data, input).start_date).to eq("2022-04-30T03:35:08.683Z") }
+    it { expect(subject.exec(mock_data, input).start_date).to eq('2022-04-30T03:35:08.683Z') }
   end
 end

@@ -9,14 +9,14 @@ describe 'Sfn::MockMacros::OptimisedStepFunction' do
         let(:data) do
           {
             status: 200,
-            output: { "some" => 'data' }
+            output: { 'some' => 'data' }
           }
         end
         let(:expected_response) do
           {
             '0' => {
               Return: {
-                Output: {"some" => "data"},
+                Output: { 'some' => 'data' },
                 Status: 'SUCCEDED'
               }
             }
@@ -57,7 +57,7 @@ describe 'Sfn::MockMacros::OptimisedStepFunction' do
           },
           {
             status: 200,
-            output: { "some" => 'data' }
+            output: { 'some' => 'data' }
           }
         ]
       end
@@ -71,7 +71,7 @@ describe 'Sfn::MockMacros::OptimisedStepFunction' do
           },
           '1' => {
             Return: {
-              Output: {"some" => "data"},
+              Output: { 'some' => 'data' },
               Status: 'SUCCEDED'
             }
           }

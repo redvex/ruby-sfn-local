@@ -56,6 +56,10 @@
         "States": {
           "Pass distributed State": {
             "Type": "Pass",
+            "Parameters": {
+              "var1": "${variable_one}",
+              "variable_two": "${variable_two}"
+            },
             "End": true
           }
         }
