@@ -7,7 +7,7 @@ module Sfn
         data = [data] if data.is_a?(Hash)
         data.map! do |val|
           if val.key?(:error)
-            { Throw: { Error: val[:error], Cause: val[:cause] } }
+            { Return: { Error: val[:error], Cause: val[:cause], Status: 'FAILED' } }
           else
             val[:output] ||= val[:payload]
             val[:output] ||= val[:response]

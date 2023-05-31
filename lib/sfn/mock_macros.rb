@@ -39,7 +39,7 @@ module Sfn
 
     def self.optimised_step_function_response(data)
       OptimisedStepFunction.response(data)
-    end
+    end 
 
     def self.secrets_manager_response(data)
       SecretsManager.response(data)

@@ -36,9 +36,10 @@ describe 'Sfn::MockMacros::StepFunction' do
         let(:expected_response) do
           {
             '0' => {
-              Throw: {
+              Return: {
                 Error: '401',
-                Cause: 'User not authorised'
+                Cause: 'User not authorised',
+                Status: 'FAILED'
               }
             }
           }
@@ -64,9 +65,10 @@ describe 'Sfn::MockMacros::StepFunction' do
       let(:expected_response) do
         {
           '0' => {
-            Throw: {
+            Return: {
               Error: '401',
-              Cause: 'User not authorised'
+              Cause: 'User not authorised',
+              Status: 'FAILED'
             }
           },
           '1' => {
