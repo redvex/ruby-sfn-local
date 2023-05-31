@@ -22,11 +22,13 @@ Gem::Specification.new do |s|
     'lib/sfn/mock_macros.rb',
     'lib/sfn/mock_macros/api_gateway.rb',
     'lib/sfn/mock_macros/lambda.rb',
+    'lib/sfn/mock_macros/native_integration.rb',
+    'lib/sfn/mock_macros/optimised_step_function.rb',
+    'lib/sfn/mock_macros/sdk_integration.rb',
+    'lib/sfn/mock_macros/secrets_manager.rb',
     'lib/sfn/mock_macros/sns.rb',
     'lib/sfn/mock_macros/sqs.rb',
-    'lib/sfn/mock_macros/optimised_step_function.rb',
     'lib/sfn/mock_macros/step_function.rb',
-    'lib/sfn/mock_macros/secrets_manager.rb',
     'lib/sfn/state_machine.rb'
   ]
   s.add_development_dependency 'rake-release', '~> 1.3'
