@@ -5,7 +5,7 @@ module Sfn
     module OptimisedStepFunction
       def self.response(data)
         data = [data] if data.is_a?(Hash)
-        data.map! do |val|
+        out_data = data.map do |val|
           if val.key?(:error)
             { Throw: { Error: val[:error], Cause: val[:cause] } }
           else
@@ -15,7 +15,7 @@ module Sfn
           end
         end
         out = {}
-        data.each_with_index do |val, idx|
+        out_data.each_with_index do |val, idx|
           out[idx.to_s] = val
         end
         out

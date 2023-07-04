@@ -2,17 +2,11 @@
 
 module Sfn
   module MockMacros
-    module Sns
+    module SdkIntegration
       def self.response(data)
         data = [data] if data.is_a?(Hash)
         out_data = data.map do |val|
-          if val.key?(:error)
-            { Throw: { Error: val[:error], Cause: val[:cause] } }
-          else
-            val[:uuid] ||= SecureRandom.uuid
-            val[:sequence] ||= 10_000_000_000_000_003_000
-            { Return: { MessageId: val[:uuid], SequenceNumber: val[:sequence] } }
-          end
+          { Return: val.to_json }
         end
         out = {}
         out_data.each_with_index do |val, idx|

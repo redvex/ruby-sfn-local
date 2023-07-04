@@ -2,17 +2,14 @@
 
 module Sfn
   module MockMacros
-    module ApiGateway
+    module NativeIntegration
       def self.response(data)
         data = [data] if data.is_a?(Hash)
         out_data = data.map do |val|
           if val.key?(:error)
             { Throw: { Error: val[:error], Cause: val[:cause] } }
           else
-            val[:response] ||= val[:payload]
-            val[:response] ||= val[:output]
-            { Return: { Headers: val[:headers], ResponseBody: val[:response], StatusCode: val[:status],
-                        StatusText: 'OK' } }
+            { Return: val }
           end
         end
         out = {}
