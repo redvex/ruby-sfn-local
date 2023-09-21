@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-sfn-local (0.1.32)
+    ruby-sfn-local (0.1.32.pre.alpha)
 
 GEM
   remote: https://rubygems.org/
