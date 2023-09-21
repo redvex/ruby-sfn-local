@@ -1,3 +1,3 @@
 module RubySfnLocal
-  VERSION = "0.1.32-alpha"
+  VERSION = "0.1.32-beta"
 end
