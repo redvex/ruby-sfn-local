@@ -18,7 +18,7 @@ describe 'Sfn::StateMachine' do
       context 'when the name contains a path' do
         let(:name) { 'test/hello' }
         it { expect(subject.path).to eq('./spec/support/definitions/test/hello.json') }
-        it { expect(subject.name).to eq('hello') }
+        it { expect(subject.name).to eq('test-hello') }
         it { expect(subject.executions).to eq({}) }
       end
 
@@ -46,7 +46,7 @@ describe 'Sfn::StateMachine' do
 
   context 'class methods based on collection' do
     describe '.all' do
-      it { expect(Sfn::StateMachine.all.count).to eq(3) }
+      it { expect(Sfn::StateMachine.all.count).to eq(4) }
     end
 
     describe '.find_by_name' do
