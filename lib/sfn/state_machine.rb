@@ -29,7 +29,7 @@ module Sfn
 
     def initialize(name, variables = {}, arn = nil)
       self.path = "#{Sfn.configuration.definition_path}/#{name}.json"
-      self.name = name.split('/').pop(2).join('-')
+      self.name = name.gsub('/','-')
       self.variables = (variables || {}).stringify_keys
       self.arn = arn || self.class.find_by_name(self.name)&.arn || create_state_machine
       self.executions = {}
