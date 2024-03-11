@@ -197,6 +197,12 @@ For a version number MAJOR.MINOR.PATCH, unless MAJOR is 0:
 Major version "zero" (0.y.z) is for initial development. Anything may change at any time. 
 The public API should not be considered stable. 
 
+## Release process
+
+1. To make it easy to handle versions, we recommend to install the gem `bump`.
+2. Run the command `bump patch`, this command will increment the version by a 0.0.1
+3. Release the gem using `rake release`
+
 ## Dependencies
 
 TODO: List gem dependencies here
