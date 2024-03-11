@@ -76,6 +76,7 @@ module Sfn
       local_definition = local_definition.gsub(/"Seconds": [0-9]+,*/, '')
       local_definition = local_definition.gsub(/"Timestamp": "[0-9\-T:+]+",*/, '')
       local_definition = local_definition.gsub(/"TimestampPath": "[^"]+",*/, '')
+      local_definition = local_definition.gsub(/"AllowNullValues": (true|false),*/, '')
       local_definition = local_definition.gsub('ItemProcessor', 'Iterator')
       local_definition = local_definition.gsub('ItemSelector', 'Parameters')
       local_definition = local_definition.gsub(/"ProcessorConfig":\s*{[\s"[A-Za-z:,]]+},*/, '')
