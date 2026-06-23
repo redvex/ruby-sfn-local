@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     'lib/sfn/mock_macros/step_function.rb',
     'lib/sfn/state_machine.rb'
   ]
+  s.add_dependency 'ostruct', '>= 0.5'
   s.add_development_dependency 'rake-release', '~> 1.3'
   s.add_development_dependency 'rspec', '~> 3.11'
   s.add_development_dependency 'rubocop', '~> 1.28'
