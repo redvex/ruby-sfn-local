@@ -12,15 +12,11 @@ describe 'Sfn::MockData' do
       'StateMachines' => {
         state_machine_name.to_s => {
           'TestCases' => {
-            context.to_s => {
-              'foo' => 'bar'
-            }
+            context.to_s => {}
           }
         }
       },
-      'MockedResponses' => {
-        'bar' => {}
-      }
+      'MockedResponses' => {}
     }
   end
 
