@@ -82,7 +82,7 @@ module Sfn
       local_definition = local_definition.gsub(/"ProcessorConfig":\s*{[\s"[A-Za-z:,]]+},*/, '')
       local_definition = local_definition.gsub(/"Label": "[A-Za-z]+",*/, '')
       local_definition = local_definition.gsub(/,[\s\n]+\}/, "\n}")
-      local_definition = local_definition.gsub(/(\${[a-z_]+})/) do |variable|
+      local_definition = local_definition.gsub(/(\${[a-z0-9_]+})/) do |variable|
         key = variable.gsub(/[${}]/, '')
         (self.variables[key] || variable).to_s
       end

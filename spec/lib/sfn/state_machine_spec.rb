@@ -7,7 +7,8 @@ describe 'Sfn::StateMachine' do
   let(:variables) do
     {
       'variable_one' => 'some string',
-      'variable_two' => '5'
+      'variable_two' => '5',
+      'variable_4_with_digits' => 'digits are allowed'
     }
   end
   let(:arn) { nil }
@@ -151,6 +152,7 @@ describe 'Sfn::StateMachine' do
         expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var1']).to eq('some string')
         expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var2']).to eq('5')
         expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var3']).to eq('${variable_three}')
+        expect(@parsed_state_machine['States']['NewDistributedMap']['Iterator']['States']['Pass distributed State']['Parameters']['var4']).to eq('digits are allowed')
       end
     end
   end
