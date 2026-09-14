@@ -59,7 +59,8 @@
             "Parameters": {
               "var1": "${variable_one}",
               "var2": "${variable_two}",
-              "var3": "${variable_three}"
+              "var3": "${variable_three}",
+              "var4": "${variable_4_with_digits}"
             },
             "End": true
           }
