@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-sfn-local (0.1.37)
+    ruby-sfn-local (0.1.38)
       ostruct (>= 0.5)
 
 GEM
